@@ -14,19 +14,33 @@ export const getAllProducts = async (req, res) => {
 
 export const getFeaturedProducts = async (req, res) => {
   try {
-    let featuredProducts = await redis.get("featured_products");
-    if (featuredProducts) {
-      return res.json(JSON.parse(featuredProducts));
+    // Try cache first if Redis is available
+    if (redis) {
+      try {
+        let cached = await redis.get("featured_products");
+        if (cached) {
+          return res.json(JSON.parse(cached));
+        }
+      } catch (err) {
+        console.log("Redis get failed (non-fatal):", err.message);
+      }
     }
 
     // .lean() is gonna return a plain javascript object instead of a mongodb document
-    featuredProducts = await Product.find({ isFeatured: true }).lean();
+    const featuredProducts = await Product.find({ isFeatured: true }).lean();
 
     if (!featuredProducts) {
       return res.status(404).json({ message: "No featured products found" });
     }
 
-    await redis.set("featured_products", JSON.stringify(featuredProducts));
+    // Cache if Redis is available
+    if (redis) {
+      try {
+        await redis.set("featured_products", JSON.stringify(featuredProducts));
+      } catch (err) {
+        console.log("Redis set failed (non-fatal):", err.message);
+      }
+    }
 
     res.json(featuredProducts);
   } catch (error) {
@@ -147,7 +161,9 @@ export const toggleFeaturedProducts = async (req, res) => {
 async function updateFeaturedProductCache() {
   try {
     const featuredProducts = await Product.find({ isFeatured: true }).lean();
-    await redis.set("featured_products", JSON.stringify(featuredProducts));
+    if (redis) {
+      await redis.set("featured_products", JSON.stringify(featuredProducts));
+    }
   } catch (error) {
     console.log("Error in update cache function");
   }
