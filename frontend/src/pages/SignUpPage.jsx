@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
+import { UserPlus, Mail, Lock, User, ArrowRight, Loader, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
 
@@ -12,45 +12,56 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { signup, loading } = useUserStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     signup(formData);
   };
 
   return (
-    <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8 min-h-[calc(100vh-4rem)]">
+      {/* Background glow */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[120px]" />
+      </div>
+
       <motion.div
-        className="sm:mx-auto sm:w-full sm:max-w-md"
+        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.5 }}
       >
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-emerald-400">
-          Create your Account
+        <h2 className="text-center text-3xl font-bold tracking-tight text-white">
+          Create Your Account
         </h2>
+        <p className="mt-2 text-center text-sm text-surface-400">
+          Join us and start shopping sustainably
+        </p>
       </motion.div>
 
       <motion.div
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
-        initial={{ opacity: 0, y: -20 }}
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="glass-light rounded-2xl py-8 px-6 sm:px-10 shadow-xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-surface-300 mb-1.5"
               >
                 Full Name
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-event-none">
-                  <User className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <User className="h-4 w-4 text-surface-500" aria-hidden="true" />
                 </div>
                 <input
                   id="name"
@@ -60,22 +71,26 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="Johnny"
+                  className="block w-full pl-10 pr-3 py-2.5 bg-surface-800/50 border border-surface-700 
+                    rounded-xl text-white placeholder-surface-500 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 
+                    transition-all duration-300"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
 
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-surface-300 mb-1.5"
               >
                 Email Address
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-event-none">
-                  <Mail className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Mail className="h-4 w-4 text-surface-500" aria-hidden="true" />
                 </div>
                 <input
                   id="email"
@@ -85,51 +100,70 @@ const SignUpPage = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="your@example.com"
+                  className="block w-full pl-10 pr-3 py-2.5 bg-surface-800/50 border border-surface-700 
+                    rounded-xl text-white placeholder-surface-500 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 
+                    transition-all duration-300"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
 
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-surface-300 mb-1.5"
               >
                 Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-event-none">
-                  <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-4 w-4 text-surface-500" aria-hidden="true" />
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder=""
+                  className="block w-full pl-10 pr-10 py-2.5 bg-surface-800/50 border border-surface-700 
+                    rounded-xl text-white placeholder-surface-500 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 
+                    transition-all duration-300"
+                  placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-surface-500 hover:text-surface-300 transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
 
+            {/* Confirm Password */}
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-surface-300 mb-1.5"
               >
                 Confirm Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-event-none">
-                  <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-4 w-4 text-surface-500" aria-hidden="true" />
                 </div>
                 <input
                   id="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   required
                   value={formData.confirmPassword}
                   onChange={(e) =>
@@ -138,43 +172,65 @@ const SignUpPage = () => {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder=""
+                  className="block w-full pl-10 pr-10 py-2.5 bg-surface-800/50 border border-surface-700 
+                    rounded-xl text-white placeholder-surface-500 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 
+                    transition-all duration-300"
+                  placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-surface-500 hover:text-surface-300 transition-colors"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700
-            focus:outline-none focus:ring-offset-2 focus:ring-emerald-500 transition duration-150 ease-in-out disable:opacity-50"
+              className="btn-primary w-full !py-2.5"
               disabled={loading}
             >
               {loading ? (
                 <>
                   <Loader
-                    className="mr-2 h-5 animate-spin"
+                    className="mr-2 h-4 w-4 animate-spin"
                     aria-hidden="true"
                   />
-                  Loading...
+                  Creating account...
                 </>
               ) : (
                 <>
-                  <UserPlus className="mr-2 h-5 w-5" aria-hidden="true" />
+                  <UserPlus className="mr-2 h-4 w-4" aria-hidden="true" />
                   Sign Up
                 </>
               )}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-gray-400">
-            Already have an account?{" "}
+          <div className="mt-6 relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-surface-700" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-transparent text-surface-500">
+                Already have an account?
+              </span>
+            </div>
+          </div>
+
+          <p className="mt-4 text-center text-sm text-surface-400">
             <Link
               to="/login"
-              className="font-medium text-emerald-400 hover:text-emerald-300"
+              className="font-medium text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
             >
-              Login here
-              <ArrowRight className="inline h-4 w-4" />
+              Sign in instead <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </p>
         </div>

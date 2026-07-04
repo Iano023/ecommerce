@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { useCartStore } from "../stores/useCartStore";
 import { Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
 
 const stripePromise = loadStripe(
-  "pk_test_51S8NqGByjTIKvPQlz7fqWCKhkrKcRGbBJMFELeLWobHqjnlhe4MRF99QmtmVv9ezbbL2QYHJ1KcSoXo5w2M5LYma00gcRjK04e"
+  import.meta.env.VITE_STRIPE_KEY
 );
 
 const Ordersummary = () => {
@@ -30,77 +29,75 @@ const Ordersummary = () => {
     });
 
     if (result.error) {
-      console.log("Error:", result.error);
+      console.error("Stripe checkout error:", result.error);
     }
   };
 
   return (
     <motion.div
-      className="space-y-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-sm sm:p-6"
+      className="glass-light rounded-2xl p-5 sm:p-6 space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <p className="text-sl font-semibold text-emerald-400">Order summary</p>
+      <h3 className="text-lg font-semibold text-white">Order Summary</h3>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <dl className="flex items-center justify-between gap-4">
-            <dt className="text-base font-normal text-gray-300">
-              Original price
+      <div className="space-y-3">
+        <dl className="flex items-center justify-between">
+          <dt className="text-sm text-surface-400">Subtotal</dt>
+          <dd className="text-sm font-medium text-surface-200">
+            ${formattedSubtotal}
+          </dd>
+        </dl>
+
+        {savings > 0 && (
+          <dl className="flex items-center justify-between">
+            <dt className="text-sm text-surface-400">Savings</dt>
+            <dd className="text-sm font-medium text-brand-400">
+              -${formattedSavings}
+            </dd>
+          </dl>
+        )}
+
+        {coupon && isCouponApplied && (
+          <dl className="flex items-center justify-between">
+            <dt className="text-sm text-surface-400">
+              Coupon ({coupon.code})
             </dt>
-            <dd className="text-base font-medium text-white">
-              ${formattedSubtotal}
+            <dd className="text-sm font-medium text-brand-400">
+              -{coupon.discountPercentage}%
             </dd>
           </dl>
-          {savings > 0 && (
-            <dl className="flex items-center justify-between gap-4">
-              <dt className="text-base font-normal text-gray-300">Savings </dt>
-              <dd className="text-base font-medium text-emerald-400">
-                ${formattedSavings}
-              </dd>
-            </dl>
-          )}
+        )}
 
-          {coupon && isCouponApplied && (
-            <dl className="flex items-center justify-between gap-4">
-              <dt className="text-base font-normal text-gray-300">
-                Coupon ({coupon.code})
-              </dt>
-              <dd className="text-base font-medium text-emerald-400">
-                ${formattedTotal}
-              </dd>
-            </dl>
-          )}
-          <dl className="flex items-center justify-between gap-4 border-t border-gray-600 pt-2">
-            <dt className="text-base font-bold text-white">Total</dt>
-            <dd className="text-base font-bold text-emerald-400">
-              ${formattedTotal}
-            </dd>
-          </dl>
-        </div>
+        <div className="h-px bg-surface-700" />
 
-        <button
-          className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none 
-        focus:ring-4 focus:ring-emerald-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handlePayment}
+        <dl className="flex items-center justify-between">
+          <dt className="text-base font-semibold text-white">Total</dt>
+          <dd className="text-lg font-bold text-brand-400">
+            ${formattedTotal}
+          </dd>
+        </dl>
+      </div>
+
+      <motion.button
+        className="btn-primary w-full !py-3"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handlePayment}
+      >
+        Proceed to Checkout
+      </motion.button>
+
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-xs text-surface-500">or</span>
+        <Link
+          to="/"
+          className="text-sm font-medium text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
         >
-          Proceed to Checkout
-        </button>
-
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-sm font-normal text-gray-400">or</span>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400
-            underline hover:text-emerald-300 hover:no-underline"
-          >
-            Continue Shopping
-            <MoveRight size={16} />
-          </Link>
-        </div>
+          Continue Shopping
+          <MoveRight size={14} />
+        </Link>
       </div>
     </motion.div>
   );

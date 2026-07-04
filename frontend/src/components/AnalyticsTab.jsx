@@ -31,7 +31,7 @@ const AnalyticsTab = () => {
         setAnalyticsData(response.data.analyticsData);
         setDailySalesData(response.data.dailySalesData);
       } catch (error) {
-        console.log("Error fetching analytics data:", error);
+        console.error("Error fetching analytics data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -41,67 +41,88 @@ const AnalyticsTab = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-2 border-brand-500/30 border-t-brand-500 rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="max-w-7xl mx-auto space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <AnalyticsCard
           title="Total Users"
           value={analyticsData.users.toLocaleString()}
           icon={Users}
-          color="from-emerald-500 to-teal-700"
+          color="brand"
         />
         <AnalyticsCard
           title="Total Products"
           value={analyticsData.products.toLocaleString()}
           icon={Package}
-          color="from-emerald-500 to-teal-700"
+          color="blue"
         />
         <AnalyticsCard
           title="Total Sales"
           value={analyticsData.totalSales.toLocaleString()}
           icon={ShoppingCart}
-          color="from-emerald-500 to-teal-700"
+          color="amber"
         />
         <AnalyticsCard
           title="Total Revenue"
           value={`$${analyticsData.totalRevenue.toLocaleString()}`}
           icon={DollarSign}
-          color="from-emerald-500 to-teal-700"
+          color="purple"
         />
       </div>
+
+      {/* Chart */}
       <motion.div
-        className="bg-gray-800/60 rounded-lg p-6 shadow-lg"
+        className="glass-light rounded-2xl p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.25 }}
       >
+        <h3 className="text-lg font-semibold text-white mb-6">
+          Sales & Revenue Overview
+        </h3>
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={dailySalesData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" stroke="#D1D5DB" />
-            <YAxis yAxisId="left" stroke="#D1D5DB" />
-            <YAxis yAxisId="right" orientation="right" stroke="#D1D5DB" />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
+            <YAxis yAxisId="left" stroke="#94a3b8" fontSize={12} />
+            <YAxis yAxisId="right" orientation="right" stroke="#94a3b8" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#1e293b",
+                border: "1px solid #334155",
+                borderRadius: "12px",
+                color: "#f1f5f9",
+                fontSize: "13px",
+              }}
+            />
             <Legend />
             <Line
               yAxisId="left"
               type="monotone"
               dataKey="sales"
               stroke="#10B981"
-              activeDot={{ r: 8 }}
+              strokeWidth={2}
+              activeDot={{ r: 6, fill: "#10B981", strokeWidth: 0 }}
               name="Sales"
+              dot={false}
             />
-
             <Line
               yAxisId="right"
               type="monotone"
               dataKey="revenue"
-              stroke="#3B82F6"
-              activeDot={{ r: 8 }}
+              stroke="#8B5CF6"
+              strokeWidth={2}
+              activeDot={{ r: 6, fill: "#8B5CF6", strokeWidth: 0 }}
               name="Revenue"
+              dot={false}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -112,22 +133,48 @@ const AnalyticsTab = () => {
 
 export default AnalyticsTab;
 
-const AnalyticsCard = ({ title, value, icon: Icon, color }) => (
-  <motion.div
-    className={`bg-gray-800 rounded-lg p-6 shadow-lg overflow-hidden relative ${color}`}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="flex justify-between items-center">
-      <div className="z-10">
-        <p className="text-emerald-300 text-sm mb-1 font-semibold">{title}</p>
-        <h3 className="text-white text-3xl font-bold">{value}</h3>
+const colorMap = {
+  brand: {
+    bg: "bg-brand-500/10",
+    icon: "text-brand-400",
+    label: "text-brand-400",
+  },
+  blue: {
+    bg: "bg-blue-500/10",
+    icon: "text-blue-400",
+    label: "text-blue-400",
+  },
+  amber: {
+    bg: "bg-amber-500/10",
+    icon: "text-amber-400",
+    label: "text-amber-400",
+  },
+  purple: {
+    bg: "bg-purple-500/10",
+    icon: "text-purple-400",
+    label: "text-purple-400",
+  },
+};
+
+const AnalyticsCard = ({ title, value, icon: Icon, color }) => {
+  const colors = colorMap[color] || colorMap.brand;
+
+  return (
+    <motion.div
+      className="glass-light rounded-2xl p-5"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex items-center gap-4">
+        <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
+          <Icon className={`h-6 w-6 ${colors.icon}`} />
+        </div>
+        <div>
+          <p className="text-sm text-surface-400">{title}</p>
+          <h3 className="text-2xl font-bold text-white mt-0.5">{value}</h3>
+        </div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-emerald-900 opacity-30" />
-      <div className="absolute -bottom-4 -right-4 tex-emerald-800 opacity-50">
-        <Icon className="h-32 w-32" />
-      </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};

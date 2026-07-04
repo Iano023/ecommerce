@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useCartStore } from "../stores/useCartStore";
 
@@ -27,70 +27,67 @@ const GiftCouponCard = () => {
 
   return (
     <motion.div
-      className="space-y-4 rounded-lg border border-gray-700 bg-gray-800 p-4 shadow-sm sm:p-6"
+      className="glass-light rounded-2xl p-5 sm:p-6 space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="voucher"
-            className="mb-2 block text-sm font-medium text-gray-300"
-          >
-            Do you have a voucher or gift card?
-          </label>
+      <div className="space-y-3">
+        <label
+          htmlFor="voucher"
+          className="block text-sm font-medium text-surface-300"
+        >
+          Have a voucher or gift card?
+        </label>
+        <div className="flex gap-2">
           <input
             type="text"
             id="voucher"
-            className="block w-full rounded-lg border border-gray-600 bg-gray-700 
-            p-2.5 text-sm text-white placeholder-gray-400 focus:border-emerald-500 
-            focus:ring-emerald-500"
-            placeholder="Enter code here"
+            className="flex-1 bg-surface-800/50 border border-surface-700 rounded-xl px-4 py-2.5 text-sm 
+              text-white placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 
+              focus:border-brand-500 transition-all duration-300"
+            placeholder="Enter code"
             value={userInputCode}
             onChange={(e) => setUserInputCode(e.target.value)}
-            required
           />
-        </div>
-        <motion.button
-          type="button"
-          className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleApplyCoupon}
-        >
-          Apply Code
-        </motion.button>
-      </div>
-      {isCouponApplied && coupon && (
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-300">Applied Coupon</h3>
-
-          <p className="mt-2 text-sm text-gray-400">
-            {coupon.code} - {coupon.discountPercentage}$ off
-          </p>
-
           <motion.button
             type="button"
-            className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 
-            px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none
-             focus:ring-4 focus:ring-red-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleRemoveCoupon}
+            className="btn-primary !px-5 !py-2.5 text-sm"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleApplyCoupon}
           >
-            Remove Coupon
+            Apply
           </motion.button>
+        </div>
+      </div>
+
+      {isCouponApplied && coupon && (
+        <div className="bg-brand-500/10 border border-brand-500/20 rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-brand-400">{coupon.code}</p>
+              <p className="text-xs text-surface-400 mt-0.5">
+                {coupon.discountPercentage}% off applied
+              </p>
+            </div>
+            <motion.button
+              type="button"
+              className="text-xs font-medium text-red-400 hover:text-red-300 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-400/10"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleRemoveCoupon}
+            >
+              Remove
+            </motion.button>
+          </div>
         </div>
       )}
 
-      {coupon && (
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-gray-300">
-            Your Available Coupon:
-          </h3>
-          <p className="mt-2 text-sm text-gray-400">
-            {coupon.code} - {coupon.discountPercentage}% off
+      {coupon && !isCouponApplied && (
+        <div className="bg-surface-800/50 rounded-xl p-3">
+          <p className="text-xs text-surface-400">
+            Available coupon: <span className="text-brand-400 font-medium">{coupon.code}</span> — {coupon.discountPercentage}% off
           </p>
         </div>
       )}

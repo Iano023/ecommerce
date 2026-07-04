@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllProducts,
+  getProductById,
   getFeaturedProducts,
   createProduct,
   deleteProduct,
@@ -16,6 +17,7 @@ router.get("/", protectRoute, adminRoute, getAllProducts);
 router.get("/featured", getFeaturedProducts);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/category/:category", getProductsByCategory);
+router.get("/:id", getProductById);
 router.post("/", protectRoute, adminRoute, createProduct);
 router.patch("/:id", protectRoute, adminRoute, toggleFeaturedProducts);
 router.delete("/:id", protectRoute, adminRoute, deleteProduct);
