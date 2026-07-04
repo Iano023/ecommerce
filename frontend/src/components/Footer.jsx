@@ -38,7 +38,7 @@ const Footer = () => {
                   <Store className="w-5 h-5 text-brand-400" />
                 </div>
                 <span className="text-lg font-bold text-white">
-                  E-Commerce
+                  EverGreen Store
                 </span>
               </Link>
               <p className="text-surface-400 text-sm leading-relaxed max-w-xs">
@@ -85,7 +85,7 @@ const Footer = () => {
           <div className="mt-12 pt-8 border-t border-surface-800">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <p className="text-sm text-surface-500">
-                &copy; 2025 E-Commerce. All rights reserved.
+                &copy; 2025 EverGreen Store. All rights reserved.
               </p>
             </div>
           </div>

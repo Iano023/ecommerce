@@ -52,7 +52,7 @@ const Navbar = () => {
                 <Store className="w-5 h-5 text-brand-400" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
-                E-Commerce
+                EverGreen Store
               </span>
             </Link>
 
